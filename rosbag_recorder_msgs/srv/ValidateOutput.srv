@@ -1,0 +1,22 @@
+# Pre-flight check of the output location, run on the machine that will do the
+# writing (which is not necessarily the machine showing the UI).
+string bag_path
+string bag_name
+bool append_timestamp
+bool storage_sqlite
+bool storage_mcap
+---
+bool ok
+string message
+bool path_exists
+bool path_writable
+bool collision                # a bag of this name is already on disk
+string[] collision_uris
+uint64 disk_free_bytes
+uint64 disk_total_bytes
+
+# Storage plugin ids rosbag2 can actually use on the recording machine, e.g.
+# ['sqlite3', 'mcap']. Empty means the bridge could not ask rosbag2,
+string[] available_writers
+
+string[] warnings

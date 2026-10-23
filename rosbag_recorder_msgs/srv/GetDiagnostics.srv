@@ -1,0 +1,24 @@
+# Health of the machine that is doing the recording.
+---
+bool success
+string message
+string hostname
+string ros_distro
+int32 ros_domain_id
+
+uint32 node_count
+uint32 topic_count
+uint32 service_count
+uint32 action_count
+
+float64 cpu_percent           # -1.0 when psutil is unavailable
+float64 memory_percent        # -1.0 when unavailable
+uint64 memory_used_bytes
+uint64 memory_total_bytes
+uint64 disk_free_bytes
+uint64 disk_total_bytes
+string disk_mount
+
+float64 bridge_uptime_sec
+string[] warnings
+string[] errors

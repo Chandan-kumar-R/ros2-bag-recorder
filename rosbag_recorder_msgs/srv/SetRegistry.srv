@@ -1,0 +1,10 @@
+# Write a topic registry back to the machine that will read it.
+#
+# The bridge validates the whole document with ros2_bag_recorder's 
+string registry_file    # empty = the bridge's default
+string registry_yaml
+---
+bool success
+string message
+string registry_path
+string[] modules

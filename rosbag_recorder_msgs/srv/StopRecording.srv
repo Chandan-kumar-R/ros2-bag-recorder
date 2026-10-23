@@ -1,0 +1,7 @@
+# Stop recording. The response is only sent after every writer has been closed
+# and the on-disk sizes have been re-read, so the summary is authoritative.
+---
+bool success
+string message
+string detail
+RecordingSummary summary

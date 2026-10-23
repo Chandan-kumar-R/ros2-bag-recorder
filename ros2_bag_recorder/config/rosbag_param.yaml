@@ -1,0 +1,42 @@
+ros2_bag_recorder_node:
+  ros__parameters:
+
+    # How topics are selected this run. Exactly one of:
+    #   'registry' - use the modules toggled below (topic_registry.yaml)
+    #   'keywords' - record every live topic whose name contains a keyword
+    selection_method: 'keywords'
+
+    # Used only when selection_method is 'keywords'. Each keyword is matched
+    # as a substring of the topic name, e.g. 'camera' records
+    # /camera/left/image and /front/camera_info; 'gps' records /gps/fix.
+    # Example: keywords: ['camera', 'gps', 'imu']
+    keywords: ['camera','global']
+
+    # Bag storage settings
+    bag_folder:
+      path: '~/rosbags'
+      name: 'keyword_multiple'
+      append_timestamp: true   # suffix _YYYY-MM-DD_HH-MM-SS, avoids collisions
+
+    storage_id:
+      sqlite: true
+      mcap: false
+
+    # Seconds between graph re-scans for newly appearing topics
+    discovery_interval_sec: 1.0
+
+    # Regexes; any match is never recorded, even if a module includes it
+    exclude_patterns: ['']
+
+    # Enable/disable modules defined in topic_registry.yaml
+    modules:
+      camera: true
+      depth: false
+      navigation: true
+      costmaps: false
+      global_ekf: true
+      navsat_transform: true
+      rtk_gnss: true
+      robot_state: true
+      diagnostics: true
+      tf: true

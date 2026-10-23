@@ -1,0 +1,50 @@
+# ==============================================================
+#  Topic Registry
+#  Each entry has exactly ONE key:
+#    topic:   exact topic name
+#    pattern: Python regex, fullmatched against topic names
+#  Message types are discovered from the ROS graph automatically.
+#  To add a module, create a section here and toggle it in
+#  rosbag_param.yaml under modules:.
+# ==============================================================
+
+camera:
+  - topic: /camera/left/image
+  - topic: /camera/left/camera_info
+  # Or match every camera image stream with one line:
+  # - pattern: /camera/.+/image
+
+depth:
+  - topic: /depth/back/camera_info
+  - topic: /depth/back/image
+
+navigation:
+  - topic: /cmd_vel
+  - topic: /odometry
+
+costmaps:
+  - topic: /map
+  - topic: /global_costmap/costmap
+
+global_ekf:
+  - topic: /global_ekf/moving_base
+
+navsat_transform:
+  - topic: /navsat_transform/moving_base
+
+rtk_gnss:
+  - topic: /nmea
+  - topic: /ublox_moving_base_node/fix
+
+robot_state:
+  - topic: /joint_states
+  - topic: /robot_description
+
+diagnostics:
+  - topic: /diagnostics
+  - topic: /dual_rtk_watchdog/diagnostic_status
+
+tf:
+  - topic: /tf
+  - topic: /tf_static
+  - topic: /rosout

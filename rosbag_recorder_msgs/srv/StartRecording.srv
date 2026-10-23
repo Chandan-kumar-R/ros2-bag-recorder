@@ -1,0 +1,9 @@
+# Begin a recording session. The bridge validates the whole config before it
+# opens a single writer, so a failed call leaves nothing behind on disk.
+RecordingConfig config
+---
+bool success
+string message        # one sentence, written for an operator
+string detail         # technical detail (exception text); may be empty
+string[] bag_uris
+string[] warnings     # non-fatal problems worth surfacing

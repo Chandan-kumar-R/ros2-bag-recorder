@@ -1,0 +1,11 @@
+# Attach or detach lightweight rate probes.
+#
+# Probes use raw (unserialised) subscriptions, so an image topic costs a byte
+# count and a timestamp rather than a decoded frame. They are still real DDS
+# subscriptions, so they are opt-in and off by default.
+bool enabled
+string[] topics       # empty means 'every currently selected topic'
+---
+bool success
+string message
+string[] monitored

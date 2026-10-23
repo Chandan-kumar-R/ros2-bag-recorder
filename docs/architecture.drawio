@@ -1,0 +1,134 @@
+<mxfile host="65bd71144e">
+    <diagram name="Deployment" id="ros2-bag-recorder-deployment">
+        <mxGraphModel dx="1119" dy="831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="cap" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size: 16px; color: rgb(31, 45, 54);&quot;&gt;ROS 2 Bag Recorder : what runs where&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="24" width="700" x="24" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="cap2" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;fontColor=#87949E;" value="Run the whole stack on one machine, or put the dashboard on a laptop and everything else on the robot. The picture does not change." vertex="1">
+                    <mxGeometry height="20" width="800" x="24" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="z_op" parent="1" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F7F9FA;strokeColor=#CCD6DD;verticalAlign=top;align=left;spacingLeft=18;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#4D5D6A;" value="OPERATOR MACHINE" vertex="1">
+                    <mxGeometry height="330" width="330" x="24" y="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="z_op_sub" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;fontColor=#87949E;" value="has a screen &amp;#183; records nothing" vertex="1">
+                    <mxGeometry height="18" width="300" x="42" y="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="ui" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#17818D;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=4;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size:14px;color:#1F2D36&quot;&gt;Dashboard&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-family:monospace&quot;&gt;rosbag_recorder_ui&lt;/span&gt;&lt;br&gt;&lt;br&gt;PySide6 window: configure, start,&lt;br&gt;monitor, stop, inspect the graph." vertex="1">
+                    <mxGeometry height="96" width="282" x="48" y="138" as="geometry"/>
+                </mxCell>
+                <mxCell id="state" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A3B3BF;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=4;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size:14px;color:#1F2D36&quot;&gt;Local state only&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-family:monospace;font-size:10px&quot;&gt;~/.config/rosbag_recorder_ui/&lt;/span&gt;&lt;br&gt;the parameter file you edit&lt;br&gt;&lt;span style=&quot;font-family:monospace;font-size:10px&quot;&gt;~/.local/share/rosbag_recorder_ui/&lt;/span&gt;&lt;br&gt;history of what you recorded" vertex="1">
+                    <mxGeometry height="124" width="282" x="48" y="256" as="geometry"/>
+                </mxCell>
+                <mxCell id="z_dds" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CCD6DD;dashed=1;dashPattern=5 4;" value="" vertex="1">
+                    <mxGeometry height="330" width="64" x="382" y="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="dds_lbl" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#4D5D6A;horizontal=0;" value="ROS 2 &amp;#183; DDS" vertex="1">
+                    <mxGeometry height="120" width="48" x="390" y="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="dds_sub" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#87949E;horizontal=0;" value="one ROS_DOMAIN_ID" vertex="1">
+                    <mxGeometry height="120" width="48" x="404" y="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="z_rb" parent="1" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F7F9FA;strokeColor=#CCD6DD;verticalAlign=top;align=left;spacingLeft=18;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#4D5D6A;" value="ROBOT PC" vertex="1">
+                    <mxGeometry height="438" width="622" x="474" y="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="z_rb_sub" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;fontColor=#87949E;" value="headless &amp;#183; owns the disk &amp;#183; does all the recording" vertex="1">
+                    <mxGeometry height="18" width="400" x="492" y="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="bridge" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#17818D;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=4;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size:14px;color:#1F2D36&quot;&gt;Bridge&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-family:monospace&quot;&gt;rosbag_recorder_bridge&lt;/span&gt;&lt;br&gt;&lt;br&gt;Owns at most one session, and&lt;br&gt;validates before opening a writer." vertex="1">
+                    <mxGeometry height="96" width="318" x="498" y="138" as="geometry"/>
+                </mxCell>
+                <mxCell id="rec" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B63B2D;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=12;spacingTop=4;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size:14px;color:#1F2D36&quot;&gt;Recorder node&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-family:monospace&quot;&gt;ros2_bag_recorder&lt;/span&gt;&lt;br&gt;&lt;br&gt;Rediscovers topics on a timer and&lt;br&gt;matches each publisher&#39;s QoS." vertex="1">
+                    <mxGeometry height="96" width="318" x="498" y="274" as="geometry"/>
+                </mxCell>
+                <mxCell id="bags" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A3B3BF;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=4;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size:14px;color:#1F2D36&quot;&gt;Bags, on the robot&#39;s disk&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-family:monospace;font-size:10px&quot;&gt;&amp;lt;bag_path&amp;gt;/&amp;lt;bag_name&amp;gt;_sqlite/&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:monospace;font-size:10px&quot;&gt;&amp;lt;bag_path&amp;gt;/&amp;lt;bag_name&amp;gt;_mcap/&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="78" width="318" x="498" y="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="robot" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A3B3BF;strokeWidth=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=4;fontSize=11;fontColor=#5B6B78;" value="&lt;b style=&quot;font-size:14px;color:#1F2D36&quot;&gt;Robot&lt;/b&gt;&lt;br&gt;nodes, drivers and sensors&lt;br&gt;&lt;br&gt;cameras &amp;#183; lidar&lt;br&gt;GNSS &amp;#183; IMU&lt;br&gt;navigation &amp;#183; tf&lt;br&gt;diagnostics&lt;br&gt;&lt;br&gt;These publish the topics;&lt;br&gt;nothing here is modified,&lt;br&gt;reconfigured or remapped&lt;br&gt;by the recorder." vertex="1">
+                    <mxGeometry height="232" width="192" x="880" y="138" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cmd" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#17818D;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#17818D;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="commands">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="330" y="164" as="sourcePoint"/>
+                        <mxPoint x="498" y="164" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_sta" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#A9761A;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#A9761A;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="status">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="498" y="210" as="sourcePoint"/>
+                        <mxPoint x="330" y="210" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_own" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B78;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#5B6B78;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="starts and stops it, in process">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="657" y="234" as="sourcePoint"/>
+                        <mxPoint x="657" y="274" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_gph" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B78;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#5B6B78;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="graph">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="880" y="186" as="sourcePoint"/>
+                        <mxPoint x="816" y="186" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_msg" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B63B2D;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#B63B2D;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="recorded messages">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="976" y="392"/>
+                            <mxPoint x="816" y="392"/>
+                        </Array>
+                        <mxPoint x="976" y="370" as="sourcePoint"/>
+                        <mxPoint x="816" y="322" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_wr" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B63B2D;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#B63B2D;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="writes">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="657" y="370" as="sourcePoint"/>
+                        <mxPoint x="657" y="410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="z_lg" parent="1" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F7F9FA;strokeColor=#CCD6DD;verticalAlign=top;align=left;spacingLeft=18;spacingTop=6;fontSize=13;fontStyle=1;fontColor=#4D5D6A;" value="WHAT CROSSES THE NETWORK" vertex="1">
+                    <mxGeometry height="146" width="1072" x="24" y="536" as="geometry"/>
+                </mxCell>
+                <mxCell id="l_cmd" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#17818D;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#17818D;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="48" y="590" as="sourcePoint"/>
+                        <mxPoint x="136" y="590" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l_cmd_t" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;fontColor=#17818D;" value="&lt;b&gt;Commands &amp;#8212; services&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="20" width="220" x="148" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="l_cmd_b" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;" value="&lt;span style=&quot;font-family:monospace;font-size:10px&quot;&gt;start_recording &amp;#183; stop_recording&lt;br&gt;preview_selection &amp;#183; validate_output&lt;br&gt;get_registry &amp;#183; set_registry&lt;br&gt;set_rate_monitor &amp;#183; get_diagnostics&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="70" width="340" x="48" y="606" as="geometry"/>
+                </mxCell>
+                <mxCell id="l_sta" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#A9761A;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#A9761A;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="408" y="590" as="sourcePoint"/>
+                        <mxPoint x="496" y="590" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l_sta_t" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;fontColor=#A9761A;" value="&lt;b&gt;Status &amp;#8212; topics&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="20" width="200" x="508" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="l_sta_b" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;" value="&lt;span style=&quot;font-family:monospace;font-size:10px&quot;&gt;~/status &amp;#8212; state, size, rate, counts, disk&lt;br&gt;~/topic_stats &amp;#8212; every topic, its QoS and state&lt;br&gt;/rosout &amp;#8212; the recorder&#39;s own log lines&lt;/span&gt;&lt;br&gt;Both are latched, so a late dashboard is current at once." vertex="1">
+                    <mxGeometry height="70" width="380" x="408" y="606" as="geometry"/>
+                </mxCell>
+                <mxCell id="l_bag" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B63B2D;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=0;fontSize=11;fontColor=#B63B2D;fontStyle=1;labelBackgroundColor=#FFFFFF;" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="804" y="590" as="sourcePoint"/>
+                        <mxPoint x="892" y="590" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l_bag_t" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;fontColor=#B63B2D;" value="&lt;b&gt;Bag data &amp;#8212; never&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="20" width="180" x="904" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="l_bag_b" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#5B6B78;" value="Recorded messages stay on the robot.&lt;br&gt;The dashboard never subscribes to a&lt;br&gt;topic being recorded, so a 4K stream&lt;br&gt;costs the link nothing." vertex="1">
+                    <mxGeometry height="70" width="290" x="804" y="606" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,9 @@
+# Fetch the topic registry as the bridge sees it, so a remote UI configures
+# modules against the file that will actually be used.
+string registry_file    # empty = the bridge's default
+---
+bool success
+string message
+string registry_path
+string registry_yaml
+string[] modules

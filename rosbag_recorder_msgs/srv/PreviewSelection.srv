@@ -1,0 +1,10 @@
+# Answer 'what would this config actually record right now?' 
+RecordingConfig config
+---
+bool success
+string message
+string[] matched_topics       # would be recorded
+string[] matched_types        # parallel to matched_topics; '' when unresolved
+string[] excluded_topics      # selected, then removed by exclude_patterns
+string[] unmatched_selectors  # registry entries / keywords with no live topic
+string[] warnings
