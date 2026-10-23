@@ -25,10 +25,10 @@ Start it from a terminal, or from a dashboard on your laptop while the robot wri
 
 ## Documentation
 
-- [Quick start](#quick-start) — install, build, run
-- [How it works](#how-it-works) — what runs where, and how the robot and your laptop talk
-- [Usage](#usage) — terminal, dashboard, remote robot, or from your own code
-- [Configuration](#configuration) — the two YAML files
+- [Quick start](#quick-start) : install, build, run
+- [How it works](#how-it-works) : what runs where, and how the robot and your laptop talk
+- [Usage](#usage) : terminal, dashboard, remote robot, or from your own code
+- [Configuration](#configuration) : the two YAML files
 
 ---
 
@@ -114,10 +114,8 @@ colcon build --symlink-install --packages-select ros2_bag_recorder
 
 - The dashboard sends **commands** and receives **status** over ROS 2 services and topics.
 - Recorded data never crosses that boundary, it goes straight onto the robot's own disk. A 4K camera stream costs the dashboard nothing.
-- One machine or two: the picture is the same, only the latency differs.
-
-Diagram source: [`docs/architecture.drawio`](docs/architecture.drawio) — editable in
-[diagrams.net](https://app.diagrams.net/). Re-export to `docs/architecture.png` after changing it.
+- One machine or two: the picture is the same, only the latency differs.-
+- Diagram source: [`docs/architecture.drawio`](docs/architecture.drawio) editable in [diagrams.net](https://app.diagrams.net/). Re-export to `docs/architecture.png` after changing it.
 - Diagram source: [`docs/architecture.drawio`](docs/architecture.drawio). Re-export to `docs/architecture.png` after editing.
 
 ---
