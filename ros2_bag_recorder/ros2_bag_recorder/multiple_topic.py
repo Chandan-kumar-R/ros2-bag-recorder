@@ -1,6 +1,7 @@
 import datetime
 import importlib
 import os
+import signal
 import yaml
 
 import rclpy
@@ -254,6 +255,9 @@ def main(args=None):
         print(f'Recorder failed: {err}')
     finally:
         if node is not None:
+            # Ctrl-C reaches us twice (terminal + ros2 launch); the second
+            # must not interrupt rosbag2 while it finalizes the bags.
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
             node.writers.close()
             node.destroy_node()
         if rclpy.ok():

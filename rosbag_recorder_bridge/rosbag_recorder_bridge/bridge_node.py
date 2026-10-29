@@ -10,6 +10,7 @@ It is headless on purpose. Run it on the robot; run the dashboard wherever the
 operator is sitting.
 """
 import os
+import signal
 import threading
 import time
 
@@ -726,6 +727,9 @@ def main(args=None):
         pass
     finally:
         if node is not None:
+            # Ctrl-C reaches us twice (terminal + ros2 launch); the second
+            # must not interrupt rosbag2 while it finalizes the bag.
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
             node.shutdown()
             node.destroy_node()
         executor.shutdown()
