@@ -71,6 +71,8 @@ Use `ros2 bag record` for a one-off. Use this when you record the same robot eve
 
 **Requires** [Ubuntu 22.04](https://releases.ubuntu.com/22.04/) · [ROS 2 Humble](https://docs.ros.org/en/humble/)
 
+> This is the **`main`** branch, for ROS 2 Humble. For Ubuntu 24.04 and ROS 2 Jazzy, use the [`jazzy`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/jazzy) branch.
+
 ```bash
 # 1. dependencies
 sudo apt install ros-humble-rosbag2-py                 # required
