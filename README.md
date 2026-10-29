@@ -71,7 +71,7 @@ Use `ros2 bag record` for a one-off. Use this when you record the same robot eve
 
 **Requires** [Ubuntu 24.04](https://releases.ubuntu.com/24.04/) · [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/)
 
-> This is the **`jazzy`** branch. For Ubuntu 22.04 and ROS 2 Humble, use the `main` branch.
+> This is the **`jazzy`** branch, for ROS 2 Jazzy. For Ubuntu 22.04 and ROS 2 Humble, use the [`main`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/main) branch.
 
 ```bash
 # 1. dependencies
