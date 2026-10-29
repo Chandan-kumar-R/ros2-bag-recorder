@@ -5,7 +5,7 @@
 Define them once in YAML instead of maintaining a 40-topic `ros2 bag record` command.
 Start it from a terminal, or from a dashboard on your laptop while the robot writes the bag.
 
-[![ROS 2](https://img.shields.io/badge/ROS%202-Humble-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/) [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04-E95420?logo=ubuntu&logoColor=white)](https://releases.ubuntu.com/22.04/) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/jazzy/) [![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white)](https://releases.ubuntu.com/24.04/) [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](#docker) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 <p align="center">
   <img src="docs/dashboard_ex.gif" alt="The ROS 2 Bag Recorder dashboard: idle, recording, the live topic table, pre-flight checks, and the finished bag" width="900">
@@ -26,6 +26,7 @@ Start it from a terminal, or from a dashboard on your laptop while the robot wri
 ## Documentation
 
 - [Quick start](#quick-start) : install, build, run
+- [Docker](#docker) : run it without installing ROS dependencies
 - [How it works](#how-it-works) : what runs where, and how the robot and your laptop talk
 - [Usage](#usage) : terminal, dashboard, remote robot, or from your own code
 - [Configuration](#configuration) : the two YAML files
@@ -68,24 +69,26 @@ Use `ros2 bag record` for a one-off. Use this when you record the same robot eve
 
 ## Quick start
 
-**Requires** [Ubuntu 22.04](https://releases.ubuntu.com/22.04/) · [ROS 2 Humble](https://docs.ros.org/en/humble/)
+**Requires** [Ubuntu 24.04](https://releases.ubuntu.com/24.04/) · [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/)
+
+> This is the **`jazzy`** branch. For Ubuntu 22.04 and ROS 2 Humble, use the `main` branch.
 
 ```bash
 # 1. dependencies
-sudo apt install ros-humble-rosbag2-py                 # required
-sudo apt install ros-humble-rosbag2-storage-mcap       # optional: MCAP output
+sudo apt install ros-jazzy-rosbag2-py                  # required
+sudo apt install ros-jazzy-rosbag2-storage-mcap        # optional: MCAP output
 sudo apt install libxcb-cursor0 python3-psutil         # dashboard
-pip3 install --user PySide6                            # dashboard
+pip3 install --user --break-system-packages PySide6    # dashboard
 ```
 
-<!-- TODO: replace with the public repository URL before release -->
+Ubuntu 24.04 ships no PySide6 package and marks the system Python as externally managed (PEP 668), so `pip` needs `--break-system-packages`. With `--user` it only touches `~/.local`.
 
 ```bash
 # 2. build
 cd ~/ros2_ws/src
-git clone <REPOSITORY-URL> ros2-bag-recorder
+git clone -b jazzy https://github.com/Chandan-kumar-R/ros2-bag-recorder.git
 cd ~/ros2_ws
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 colcon build --symlink-install
 source install/setup.bash
 ```
@@ -102,7 +105,63 @@ Recorder only, without the GUI dependencies:
 colcon build --symlink-install --packages-select ros2_bag_recorder
 ```
 
-> **Note** `libxcb-cursor0` is not optional for the dashboard. Qt 6.5+ needs it, the PySide6 wheel does not ship it, and Ubuntu 22.04 does not install it by default. Without it Qt aborts with a misleading "reinstall the application" message.
+> **Note** `libxcb-cursor0` is not optional for the dashboard. Qt 6.5+ needs it, the PySide6 wheel does not ship it, and Ubuntu does not install it by default. Without it Qt aborts with a misleading "reinstall the application" message.
+
+---
+
+## Docker
+
+No ROS on the host? Run it in a container. The image is ROS 2 Jazzy on Ubuntu 24.04 with MCAP support, and has two targets:
+
+| Target | Contains | Default command |
+|---|---|---|
+| `headless` (default) | recorder + bridge | `bridge.launch.py` |
+| `dashboard` | the above + PySide6 and the Qt libraries | `dashboard.launch.py` |
+
+```bash
+# build, from the repository root
+docker build -t ros2-bag-recorder:jazzy .
+docker build -t ros2-bag-recorder:jazzy-dashboard --target dashboard .
+```
+
+Always run with `--net=host --ipc=host`. Otherwise DDS cannot discover the topics of the nodes outside the container. Bags are written to `/root/rosbags` in the container, so mount a host directory there.
+
+```bash
+# on the robot: the bridge, driven from a dashboard or service calls
+docker run --rm -it --net=host --ipc=host \
+  -v ~/rosbags:/root/rosbags \
+  ros2-bag-recorder:jazzy
+```
+
+```bash
+# terminal recorder with your own parameter file
+docker run --rm -it --net=host --ipc=host \
+  -v ~/rosbags:/root/rosbags \
+  -v $(pwd)/my_params.yaml:/params.yaml:ro \
+  ros2-bag-recorder:jazzy \
+  ros2 launch ros2_bag_recorder recorder.launch.py params_file:=/params.yaml
+```
+
+```bash
+# the dashboard (needs X access to the host display)
+xhost +local:docker
+docker run --rm -it --net=host --ipc=host \
+  -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v ~/rosbags:/root/rosbags \
+  ros2-bag-recorder:jazzy-dashboard
+```
+
+The same setups with [`compose.yaml`](compose.yaml); bags land in `./rosbags`:
+
+```bash
+docker compose up bridge                # headless bridge
+docker compose up dashboard             # bridge + dashboard
+docker compose run --rm recorder        # terminal recorder
+```
+
+- Use the same `ROS_DOMAIN_ID` inside and outside the container (`-e ROS_DOMAIN_ID=...`).
+- The container runs as root, so the bags it writes are owned by root on the host. `sudo chown -R $USER ~/rosbags` hands them back.
+- Message packages must be installed **in the image** for their topics to be recorded. For custom messages, build them into a derived image (`FROM ros2-bag-recorder:jazzy`).
 
 ---
 
@@ -270,6 +329,10 @@ ros2-bag-recorder/
 │       ├── ros/               the only file that touches rclpy
 │       ├── views/             one module per page
 │       └── widgets/           cards, indicators, log panel, sidebar
+│
+├── docker/                    container entrypoint
+├── Dockerfile                 headless and dashboard images
+├── compose.yaml               bridge / recorder / dashboard services
 │
 └── docs/                      architecture diagram, screenshots, demo clip
 ```
