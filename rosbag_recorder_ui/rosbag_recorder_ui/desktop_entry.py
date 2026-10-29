@@ -122,7 +122,7 @@ def install(keep_domain=True):
     with open(target['icon'], 'w') as handle:
         handle.write(icons.app_icon_svg())
 
-    distro = os.environ.get('ROS_DISTRO', 'humble')
+    distro = os.environ.get('ROS_DISTRO', 'jazzy')
     domain = os.environ.get('ROS_DOMAIN_ID', '')
     domain_line = (f'export ROS_DOMAIN_ID={domain}'
                    if keep_domain and domain else '')

@@ -26,6 +26,7 @@ class WriterPool:
     def __init__(self, bag_path, bag_name, enabled_formats, logger):
         converter = rosbag2_py._storage.ConverterOptions('', '')
         self._writers = []
+        self._topic_count = 0
         for key in enabled_formats:
             storage_id, suffix = self.FORMATS[key]
             options = rosbag2_py._storage.StorageOptions(
@@ -40,8 +41,11 @@ class WriterPool:
             raise RuntimeError('Enable at least one storage format (sqlite/mcap).')
 
     def add_topic(self, name, type_str):
+        # Jazzy's TopicMetadata takes a required id, unique per bag.
+        self._topic_count += 1
         metadata = rosbag2_py._storage.TopicMetadata(
-            name=name, type=type_str, serialization_format='cdr')
+            id=self._topic_count, name=name, type=type_str,
+            serialization_format='cdr')
         for writer in self._writers:
             writer.create_topic(metadata)
 

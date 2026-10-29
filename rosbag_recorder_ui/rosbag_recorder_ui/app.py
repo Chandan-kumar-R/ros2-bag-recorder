@@ -62,7 +62,7 @@ def check_platform_prerequisites():
         return ('Qt cannot start its X11 backend because libxcb-cursor0 is not '
                 'installed.\n\nFix it with:\n    sudo apt install libxcb-cursor0\n\n'
                 'Qt 6.5+ needs that library, the PySide6 wheel does not ship it, '
-                'and Ubuntu 22.04 does not install it by default.')
+                'and Ubuntu does not install it by default.')
     return ''
 
 
