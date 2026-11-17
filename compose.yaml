@@ -1,0 +1,46 @@
+# docker compose up bridge                 headless bridge (robot)
+# docker compose up dashboard              bridge + dashboard (workstation)
+# docker compose run --rm recorder         terminal recorder, rosbag_param.yaml
+#
+# Host networking and IPC so DDS discovery reaches the robot's other nodes.
+# UDP only (docker/fastdds_udp.xml): Fast DDS shared memory between root in
+# here and a normal user outside finds topics but delivers no data.
+# Bags land in ./rosbags.
+# The dashboard needs X access first:  xhost +SI:localuser:root
+
+x-ros: &ros
+  image: ros2-bag-recorder:humble
+  build:
+    context: .
+    target: headless
+  network_mode: host
+  ipc: host
+  environment:
+    - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+    - FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml
+  volumes:
+    - ./rosbags:/root/rosbags
+
+services:
+  bridge:
+    <<: *ros
+
+  recorder:
+    <<: *ros
+    profiles: [manual]
+    command: ["ros2", "launch", "ros2_bag_recorder", "recorder.launch.py"]
+
+  dashboard:
+    <<: *ros
+    image: ros2-bag-recorder:humble-dashboard
+    build:
+      context: .
+      target: dashboard
+    profiles: [gui]
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - ./rosbags:/root/rosbags
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw

@@ -1,0 +1,13 @@
+.git
+.gitignore
+.dockerignore
+Dockerfile
+compose.yaml
+docs
+**/docs
+**/__pycache__
+**/.pytest_cache
+build
+install
+log
+start.sh

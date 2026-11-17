@@ -1,11 +1,15 @@
 # ROS 2 Bag Recorder
 
-**Record the same ROS 2 topics, the same way, every run.**
+**A dashboard for recording ROS 2 bags.**
 
-Define them once in YAML instead of maintaining a 40-topic `ros2 bag record` command.
-Start it from a terminal, or from a dashboard on your laptop while the robot writes the bag.
+Pick topics, check the setup, then start and stop recordings from one window, without typing a long `ros2 bag record` command. Your topic list is saved as YAML, so every run records the same topics. Run the dashboard on your laptop to control a recorder on your robot; the bag is saved on the robot, not sent over the network.
 
-[![ROS 2](https://img.shields.io/badge/ROS%202-Humble-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/) [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04-E95420?logo=ubuntu&logoColor=white)](https://releases.ubuntu.com/22.04/) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![ROS 2](https://img.shields.io/badge/ROS%202-Humble-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/) [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04-E95420?logo=ubuntu&logoColor=white)](https://releases.ubuntu.com/22.04/) [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](#docker) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+**Which branch?**
+
+- [`main`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/main) : ROS 2 Humble, Ubuntu 22.04
+- [`jazzy`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/jazzy) : ROS 2 Jazzy, Ubuntu 24.04
 
 <p align="center">
   <img src="docs/dashboard_ex.gif" alt="The ROS 2 Bag Recorder dashboard: idle, recording, the live topic table, pre-flight checks, and the finished bag" width="900">
@@ -26,6 +30,7 @@ Start it from a terminal, or from a dashboard on your laptop while the robot wri
 ## Documentation
 
 - [Quick start](#quick-start) : install, build, run
+- [Docker](#docker) : run it without installing ROS dependencies
 - [How it works](#how-it-works) : what runs where, and how the robot and your laptop talk
 - [Usage](#usage) : terminal, dashboard, remote robot, or from your own code
 - [Configuration](#configuration) : the two YAML files
@@ -70,6 +75,8 @@ Use `ros2 bag record` for a one-off. Use this when you record the same robot eve
 
 **Requires** [Ubuntu 22.04](https://releases.ubuntu.com/22.04/) · [ROS 2 Humble](https://docs.ros.org/en/humble/)
 
+> This is the **`main`** branch, for ROS 2 Humble. For Ubuntu 24.04 and ROS 2 Jazzy, use the [`jazzy`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/jazzy) branch.
+
 ```bash
 # 1. dependencies
 sudo apt install ros-humble-rosbag2-py                 # required
@@ -78,12 +85,10 @@ sudo apt install libxcb-cursor0 python3-psutil         # dashboard
 pip3 install --user PySide6                            # dashboard
 ```
 
-<!-- TODO: replace with the public repository URL before release -->
-
 ```bash
 # 2. build
 cd ~/ros2_ws/src
-git clone <REPOSITORY-URL> ros2-bag-recorder
+git clone https://github.com/Chandan-kumar-R/ros2-bag-recorder.git
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
 colcon build --symlink-install
@@ -103,6 +108,97 @@ colcon build --symlink-install --packages-select ros2_bag_recorder
 ```
 
 > **Note** `libxcb-cursor0` is not optional for the dashboard. Qt 6.5+ needs it, the PySide6 wheel does not ship it, and Ubuntu 22.04 does not install it by default. Without it Qt aborts with a misleading "reinstall the application" message.
+
+---
+
+## Docker
+
+No ROS on the host? Run it in a container. The image is ROS 2 Humble on Ubuntu 22.04 with MCAP support.
+
+### Quick start: `start.sh`
+
+```bash
+./start.sh dashboard     # bridge + dashboard window on this display
+./start.sh bridge        # headless bridge, e.g. on the robot
+./start.sh recorder      # terminal recorder, packaged rosbag_param.yaml
+./start.sh shell         # bash inside the image
+```
+
+It builds the image on first use and handles the networking, the bag folder and X11 access for you. Bags land in `~/rosbags`. Stop with `Ctrl-C`, or close the dashboard window.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `ROS_DOMAIN_ID` | `0` | Domain to join. Must match the nodes you record. |
+| `BAG_DIR` | `~/rosbags` | Host directory the bags are written to |
+| `CONFIG_DIR` | | Host directory mounted read-only at `/config` |
+| `REBUILD=1` | | Rebuild the image, e.g. after pulling changes |
+
+Anything after the mode is passed to `ros2 launch`:
+
+```bash
+CONFIG_DIR=~/rec ./start.sh recorder params_file:=/config/my_params.yaml
+ROS_DOMAIN_ID=99 ./start.sh dashboard use_bridge:=false
+```
+
+### By hand
+
+The Dockerfile has two targets. A plain `docker build` builds the last one, `headless`.
+
+| Target | Contains | Default command | Size |
+|---|---|---|---|
+| `headless` (default) | recorder + bridge | `bridge.launch.py` | ~1.2 GB |
+| `dashboard` | the above + PySide6 and the Qt libraries | `dashboard.launch.py` | ~2.4 GB |
+
+```bash
+# build, from the repository root
+docker build -t ros2-bag-recorder:humble .
+docker build -t ros2-bag-recorder:humble-dashboard --target dashboard .
+```
+
+Always run with `--net=host --ipc=host`, or DDS cannot see the nodes outside the container. Also point Fast DDS at the image's UDP-only profile with `FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml`: the container runs as root, and Fast DDS shared memory between root and a normal user finds the topics but delivers no messages. Humble's Fast DDS has no `FASTDDS_BUILTIN_TRANSPORTS` variable, so the profile ([`docker/fastdds_udp.xml`](docker/fastdds_udp.xml)) does the same job. Bags are written to `/root/rosbags` in the container, so mount a host directory there.
+
+```bash
+# on the robot: the bridge, driven from a dashboard or service calls
+docker run --rm -it --net=host --ipc=host \
+  -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml \
+  -v ~/rosbags:/root/rosbags \
+  ros2-bag-recorder:humble
+```
+
+```bash
+# terminal recorder with your own parameter file
+docker run --rm -it --net=host --ipc=host \
+  -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml \
+  -v ~/rosbags:/root/rosbags \
+  -v $(pwd)/my_params.yaml:/params.yaml:ro \
+  ros2-bag-recorder:humble \
+  ros2 launch ros2_bag_recorder recorder.launch.py params_file:=/params.yaml
+```
+
+```bash
+# the dashboard (let root in the container use your display first)
+xhost +SI:localuser:root
+docker run --rm -it --net=host --ipc=host \
+  -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml \
+  -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v ~/rosbags:/root/rosbags \
+  ros2-bag-recorder:humble-dashboard
+```
+
+The same setups with [`compose.yaml`](compose.yaml); bags land in `./rosbags`:
+
+```bash
+docker compose up bridge                # headless bridge
+docker compose up dashboard             # bridge + dashboard
+docker compose run --rm recorder        # terminal recorder
+```
+
+### Good to know
+
+- Use the same `ROS_DOMAIN_ID` inside and outside the container (`-e ROS_DOMAIN_ID=...`).
+- `docker stop` ends a recording cleanly: the image's stop signal is SIGINT, the same as `Ctrl-C`.
+- The container runs as root, so the bags it writes are owned by root on the host. `sudo chown -R $USER ~/rosbags` hands them back.
+- Message packages must be installed **in the image** for their topics to be recorded. For custom messages, build them into a derived image (`FROM ros2-bag-recorder:humble`).
 
 ---
 
@@ -270,6 +366,11 @@ ros2-bag-recorder/
 │       ├── ros/               the only file that touches rclpy
 │       ├── views/             one module per page
 │       └── widgets/           cards, indicators, log panel, sidebar
+│
+├── docker/                    container entrypoint, Fast DDS UDP profile
+├── Dockerfile                 headless and dashboard images
+├── compose.yaml               bridge / recorder / dashboard services
+├── start.sh                   one-command docker run: dashboard / bridge / recorder
 │
 └── docs/                      architecture diagram, screenshots, demo clip
 ```
