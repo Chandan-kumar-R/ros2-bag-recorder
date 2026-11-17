@@ -1,9 +1,8 @@
 # ROS 2 Bag Recorder
 
-**Record the same ROS 2 topics, the same way, every run.**
+**A dashboard for recording ROS 2 bags.**
 
-Define them once in YAML instead of maintaining a 40-topic `ros2 bag record` command.
-Start it from a terminal, or from a dashboard on your laptop while the robot writes the bag.
+Pick topics, check the setup, then start and stop recordings from one window, without typing a long ros2 bag record command. Your topic list is saved as YAML, so every run records the same topics. Run the dashboard on your laptop to control a recorder on your robot; the bag is saved on the robot, not sent over the network.
 
 [![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/jazzy/) [![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white)](https://releases.ubuntu.com/24.04/) [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](#docker) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
