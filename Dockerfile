@@ -48,6 +48,10 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh \
 COPY docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+# UDP-only Fast DDS profile; enable with
+#   -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml
+COPY docker/fastdds_udp.xml /fastdds_udp.xml
+
 # ros2 launch shuts down cleanly on SIGINT (Ctrl-C) but ignores docker's
 # default SIGTERM, so `docker stop` would SIGKILL it and leave the bag
 # unfinalized.

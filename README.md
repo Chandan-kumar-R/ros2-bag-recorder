@@ -111,12 +111,41 @@ colcon build --symlink-install --packages-select ros2_bag_recorder
 
 ## Docker
 
-No ROS on the host? Run it in a container. The image is ROS 2 Humble on Ubuntu 22.04 with MCAP support, and has two targets:
+No ROS on the host? Run it in a container. The image is ROS 2 Humble on Ubuntu 22.04 with MCAP support.
 
-| Target | Contains | Default command |
+### Quick start: `start.sh`
+
+```bash
+./start.sh dashboard     # bridge + dashboard window on this display
+./start.sh bridge        # headless bridge, e.g. on the robot
+./start.sh recorder      # terminal recorder, packaged rosbag_param.yaml
+./start.sh shell         # bash inside the image
+```
+
+It builds the image on first use and handles the networking, the bag folder and X11 access for you. Bags land in `~/rosbags`. Stop with `Ctrl-C`, or close the dashboard window.
+
+| Variable | Default | Meaning |
 |---|---|---|
-| `headless` (default) | recorder + bridge | `bridge.launch.py` |
-| `dashboard` | the above + PySide6 and the Qt libraries | `dashboard.launch.py` |
+| `ROS_DOMAIN_ID` | `0` | Domain to join. Must match the nodes you record. |
+| `BAG_DIR` | `~/rosbags` | Host directory the bags are written to |
+| `CONFIG_DIR` | | Host directory mounted read-only at `/config` |
+| `REBUILD=1` | | Rebuild the image, e.g. after pulling changes |
+
+Anything after the mode is passed to `ros2 launch`:
+
+```bash
+CONFIG_DIR=~/rec ./start.sh recorder params_file:=/config/my_params.yaml
+ROS_DOMAIN_ID=99 ./start.sh dashboard use_bridge:=false
+```
+
+### By hand
+
+The Dockerfile has two targets. A plain `docker build` builds the last one, `headless`.
+
+| Target | Contains | Default command | Size |
+|---|---|---|---|
+| `headless` (default) | recorder + bridge | `bridge.launch.py` | ~1.2 GB |
+| `dashboard` | the above + PySide6 and the Qt libraries | `dashboard.launch.py` | ~2.4 GB |
 
 ```bash
 # build, from the repository root
@@ -124,11 +153,12 @@ docker build -t ros2-bag-recorder:humble .
 docker build -t ros2-bag-recorder:humble-dashboard --target dashboard .
 ```
 
-Always run with `--net=host --ipc=host`. Otherwise DDS cannot discover the topics of the nodes outside the container. Bags are written to `/root/rosbags` in the container, so mount a host directory there.
+Always run with `--net=host --ipc=host`, or DDS cannot see the nodes outside the container. Also point Fast DDS at the image's UDP-only profile with `FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml`: the container runs as root, and Fast DDS shared memory between root and a normal user finds the topics but delivers no messages. Humble's Fast DDS has no `FASTDDS_BUILTIN_TRANSPORTS` variable, so the profile ([`docker/fastdds_udp.xml`](docker/fastdds_udp.xml)) does the same job. Bags are written to `/root/rosbags` in the container, so mount a host directory there.
 
 ```bash
 # on the robot: the bridge, driven from a dashboard or service calls
 docker run --rm -it --net=host --ipc=host \
+  -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml \
   -v ~/rosbags:/root/rosbags \
   ros2-bag-recorder:humble
 ```
@@ -136,6 +166,7 @@ docker run --rm -it --net=host --ipc=host \
 ```bash
 # terminal recorder with your own parameter file
 docker run --rm -it --net=host --ipc=host \
+  -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml \
   -v ~/rosbags:/root/rosbags \
   -v $(pwd)/my_params.yaml:/params.yaml:ro \
   ros2-bag-recorder:humble \
@@ -143,9 +174,10 @@ docker run --rm -it --net=host --ipc=host \
 ```
 
 ```bash
-# the dashboard (needs X access to the host display)
-xhost +local:docker
+# the dashboard (let root in the container use your display first)
+xhost +SI:localuser:root
 docker run --rm -it --net=host --ipc=host \
+  -e FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_udp.xml \
   -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v ~/rosbags:/root/rosbags \
   ros2-bag-recorder:humble-dashboard
@@ -159,7 +191,10 @@ docker compose up dashboard             # bridge + dashboard
 docker compose run --rm recorder        # terminal recorder
 ```
 
+### Good to know
+
 - Use the same `ROS_DOMAIN_ID` inside and outside the container (`-e ROS_DOMAIN_ID=...`).
+- `docker stop` ends a recording cleanly: the image's stop signal is SIGINT, the same as `Ctrl-C`.
 - The container runs as root, so the bags it writes are owned by root on the host. `sudo chown -R $USER ~/rosbags` hands them back.
 - Message packages must be installed **in the image** for their topics to be recorded. For custom messages, build them into a derived image (`FROM ros2-bag-recorder:humble`).
 
@@ -330,9 +365,10 @@ ros2-bag-recorder/
 │       ├── views/             one module per page
 │       └── widgets/           cards, indicators, log panel, sidebar
 │
-├── docker/                    container entrypoint
+├── docker/                    container entrypoint, Fast DDS UDP profile
 ├── Dockerfile                 headless and dashboard images
 ├── compose.yaml               bridge / recorder / dashboard services
+├── start.sh                   one-command docker run: dashboard / bridge / recorder
 │
 └── docs/                      architecture diagram, screenshots, demo clip
 ```
