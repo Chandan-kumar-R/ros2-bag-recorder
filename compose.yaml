@@ -2,9 +2,10 @@
 # docker compose up dashboard              bridge + dashboard (workstation)
 # docker compose run --rm recorder         terminal recorder, rosbag_param.yaml
 #
-# Host networking and IPC so DDS discovery and shared memory reach the
-# robot's other nodes. Bags land in ./rosbags on the host.
-# The dashboard needs X access first:  xhost +local:docker
+# Host networking and IPC so DDS discovery reaches the robot's other nodes.
+# UDP only: Fast DDS shared memory between root in here and a normal user
+# outside finds topics but delivers no data. Bags land in ./rosbags.
+# The dashboard needs X access first:  xhost +SI:localuser:root
 
 x-ros: &ros
   image: ros2-bag-recorder:jazzy
@@ -15,6 +16,7 @@ x-ros: &ros
   ipc: host
   environment:
     - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+    - FASTDDS_BUILTIN_TRANSPORTS=UDPv4
   volumes:
     - ./rosbags:/root/rosbags
 
@@ -36,6 +38,7 @@ services:
     profiles: [gui]
     environment:
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - FASTDDS_BUILTIN_TRANSPORTS=UDPv4
       - DISPLAY=${DISPLAY}
     volumes:
       - ./rosbags:/root/rosbags
