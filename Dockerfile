@@ -48,6 +48,11 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh \
 COPY docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+# ros2 launch shuts down cleanly on SIGINT (Ctrl-C) but ignores docker's
+# default SIGTERM, so `docker stop` would SIGKILL it and leave the bag
+# unfinalized.
+STOPSIGNAL SIGINT
+
 # Bags are written here; mount a host directory over it.
 VOLUME ["/root/rosbags"]
 
