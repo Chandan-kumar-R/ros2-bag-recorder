@@ -1,18 +1,39 @@
-# ROS 2 Bag Recorder
+<h1 align="center">ROS 2 Bag Recorder</h1>
 
-**A dashboard for recording ROS 2 bags.**
-
-Pick topics, check the setup, then start and stop recordings from one window, without typing a long ros2 bag record command. Your topic list is saved as YAML, so every run records the same topics. Run the dashboard on your laptop to control a recorder on your robot; the bag is saved on the robot, not sent over the network.
-
-[![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/jazzy/) [![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white)](https://releases.ubuntu.com/24.04/) [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](#docker) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://docs.ros.org/en/jazzy/"><img alt="ROS 2: Jazzy" src="https://img.shields.io/badge/ROS%202-Jazzy-22314E?logo=ros&logoColor=white"></a>
+  <a href="https://releases.ubuntu.com/24.04/"><img alt="Ubuntu: 24.04" src="https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white"></a>
+  <img alt="Python: 3.12" src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white">
+  <img alt="GUI: PySide6" src="https://img.shields.io/badge/GUI-PySide6-41CD52?logo=qt&logoColor=white">
+  <img alt="Storage: sqlite3 and MCAP" src="https://img.shields.io/badge/Storage-sqlite3%20%C2%B7%20MCAP-6E40C9">
+  <a href="#-docker"><img alt="Docker: ready" src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white"></a>
+  <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/License-Apache%202.0-D4A017"></a>
+</p>
 
 <p align="center">
   <img src="docs/dashboard_ex.gif" alt="The ROS 2 Bag Recorder dashboard: idle, recording, the live topic table, pre-flight checks, and the finished bag" width="900">
 </p>
 
 <p align="center">
+  <b><i>A dashboard for recording ROS 2 bags.</i></b><br>
   <sub>20 seconds, real UI. <a href="docs/dashboard_ex.mp4">Download the MP4</a> for full resolution and sound.</sub>
 </p>
+
+---
+
+## 🚀 Overview
+
+Pick topics, check the setup, then start and stop recordings from one window, without typing a long `ros2 bag record` command. Your topic list is saved as YAML, so every run records the same topics. Run the dashboard on your laptop to control a recorder on your robot; the bag is saved on the robot, not sent over the network.
+
+- Author: Chandan Kumar Rajendra ([@Chandan-kumar-R](https://github.com/Chandan-kumar-R))
+- Tested on: Ubuntu 22.04 with ROS 2 Humble, and Ubuntu 24.04 with ROS 2 Jazzy
+
+**Which branch?**
+
+- [`main`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/main) : ROS 2 Humble, Ubuntu 22.04
+- [`jazzy`](https://github.com/Chandan-kumar-R/ros2-bag-recorder/tree/jazzy) : ROS 2 Jazzy, Ubuntu 24.04
+
+**Highlights**
 
 - **Pick topics in YAML :** by module, by keyword, or by ticking them in the UI.
 - **Never write message types :** They come from the live ROS graph.
@@ -22,17 +43,17 @@ Pick topics, check the setup, then start and stop recordings from one window, wi
 
 ---
 
-## Documentation
+## 📖 Documentation
 
-- [Quick start](#quick-start) : install, build, run
-- [Docker](#docker) : run it without installing ROS dependencies
-- [How it works](#how-it-works) : what runs where, and how the robot and your laptop talk
-- [Usage](#usage) : terminal, dashboard, remote robot, or from your own code
-- [Configuration](#configuration) : the two YAML files
+- [Quick start](#-quick-start) : install, build, run
+- [Docker](#-docker) : run it without installing ROS dependencies
+- [How it works](#-how-it-works) : what runs where, and how the robot and your laptop talk
+- [Usage](#-usage) : terminal, dashboard, remote robot, or from your own code
+- [Configuration](#-configuration) : the two YAML files
 
 ---
 
-## Why not just `ros2 bag record`?
+## 🤔 Why not just `ros2 bag record`?
 
 Use `ros2 bag record` for a one-off. Use this when you record the same robot every day.
 
@@ -49,7 +70,7 @@ Use `ros2 bag record` for a one-off. Use this when you record the same robot eve
 
 ---
 
-## Features
+## ✨ Features
 
 | | |
 |---|---|
@@ -66,7 +87,7 @@ Use `ros2 bag record` for a one-off. Use this when you record the same robot eve
 
 ---
 
-## Quick start
+## ⚡ Quick start
 
 **Requires** [Ubuntu 24.04](https://releases.ubuntu.com/24.04/) · [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/)
 
@@ -108,7 +129,7 @@ colcon build --symlink-install --packages-select ros2_bag_recorder
 
 ---
 
-## Docker
+## 🐳 Docker
 
 No ROS on the host? Run it in a container. The image is ROS 2 Jazzy on Ubuntu 24.04 with MCAP support.
 
@@ -199,7 +220,7 @@ docker compose run --rm recorder        # terminal recorder
 
 ---
 
-## How it works
+## 🧭 How it works
 
 <p align="center">
   <img src="docs/architecture.png" alt="Deployment architecture" width="1000">
@@ -213,7 +234,7 @@ docker compose run --rm recorder        # terminal recorder
 
 ---
 
-## Usage
+## 💻 Usage
 
 ### 1. Record from a terminal
 
@@ -285,7 +306,7 @@ ros2 service call /rosbag_recorder_bridge/stop_recording \
 
 ---
 
-## Configuration
+## 🔧 Configuration
 
 Two files. The dashboard reads and writes the same ones.
 
@@ -339,7 +360,7 @@ Example : `keywords: ['camera', 'gps']` records `/camera/left/image`, `/front/ca
 
 ---
 
-## Project structure
+## 📁 Project structure
 
 ```
 ros2-bag-recorder/
@@ -374,7 +395,7 @@ ros2-bag-recorder/
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Issues and pull requests are welcome.
 
@@ -385,6 +406,6 @@ Issues and pull requests are welcome.
 
 ---
 
-## License
+## 📄 License
 
 Apache License 2.0
